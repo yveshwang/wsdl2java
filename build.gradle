@@ -1,0 +1,54 @@
+/**
+ * Yves Hwang
+ * 04.02.2015
+ *
+ * Generic Gradle wsdl2java build script
+ */
+apply plugin: 'java'
+
+repositories {
+    mavenCentral()
+    jcenter()
+}
+
+project.ext {
+    cxfVersion = "3.0.0-milestone1"
+    wsdlLoc = ""
+}
+
+// New configuration for CXF dependencies.
+configurations { cxfTool }
+ext {
+// Artifacts for CXF dependency.
+    cxfToolArtifacts = [
+            'cxf-tools-wsdlto-frontend-jaxws',
+            'cxf-tools-wsdlto-databinding-jaxb',
+            'cxf-tools-common',
+            'cxf-tools-wsdlto-core'
+    ]
+}
+
+dependencies {
+    cxfToolArtifacts.each { artifact ->
+        cxfTool "org.apache.cxf:$artifact:$cxfVersion"
+    }
+}
+
+task wsdl2java(type: JavaExec) {
+    if( System.getProperty('exec.args') !=null ) {
+        ext {
+            outputDir = file("$buildDir/generated/cxf")
+        }
+        outputs.upToDateWhen { false }
+        outputs.dir outputDir
+        main = 'org.apache.cxf.tools.wsdlto.WSDLToJava'
+        classpath = configurations.cxfTool
+        args '-d', outputDir
+        args "-client"
+        args '-verbose'
+        args '-validate'
+        args System.getProperty('exec.args').split()
+    } else {
+         throw new GradleException("System properties failed for wsdl2java task. Ensure the wsdl.loc properties is provided as an JVM arg. This can be an HTTP endpoint or file. For example:\n\ngradle wsdl2java -Dexec.args=http://someplace.com/somewhere?WSDL")
+    }
+}

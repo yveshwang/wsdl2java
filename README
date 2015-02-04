@@ -1,0 +1,9 @@
+Yves Hwang
+
+04.02.2015
+
+Generic Gradle build file for generating java files from SOAP-endpoints.
+
+Usage:
+
+gradle wsdl2java -Dexec.args=some.wsdl
