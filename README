@@ -7,3 +7,7 @@ Generic Gradle build file for generating java files from SOAP-endpoints.
 Usage:
 
 gradle wsdl2java -Dexec.args=some.wsdl
+
+gradle wsdl2java -Dexec.args=http://someurl.com?WSDL
+
+gradle wsdl2java -Dexec.args=http://username:passwd@host:port/path/service?WSDL
